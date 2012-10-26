@@ -1,5 +1,7 @@
 package mygame;
 
+
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.jme3.network.HostedConnection;
+import com.jme3.network.serializing.Serializer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -39,18 +42,34 @@ public class ServerMain extends SimpleApplication {
             Logger.getLogger(ServerMain.class.getName()).log(Level.SEVERE, null, ex);
         }
         myServer.start();
+        
+        // Registrar cada tipo de mensaje
+        Serializer.registerClass(HelloMessage.class);
+        // ...
+        
+        // Registrar los Listeners de cada tipo de mensaje
+        myServer.addMessageListener(new ServerListener(), HelloMessage.class);
+        // ...
+        
     }
 
     @Override
     public void simpleUpdate(float tpf) {
         ArrayList<HostedConnection> con = new ArrayList<HostedConnection> (myServer.getConnections());
         if (con.size() != 0){
-            System.out.println(con.get(0).getAddress());
+            //System.out.println(con.get(0).getAddress());
         }
     }
 
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
+    }
+    
+    // Necesitamos cerrar la conexión antes de apagar el server
+    @Override
+    public void destroy() {
+      myServer.close();
+      super.destroy();
     }
 }
