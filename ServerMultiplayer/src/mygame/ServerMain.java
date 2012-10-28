@@ -48,17 +48,14 @@ public class ServerMain extends SimpleApplication {
         // ...
         
         // Registrar los Listeners de cada tipo de mensaje
-        myServer.addMessageListener(new ServerListener(), HelloMessage.class);
+        myServer.addMessageListener(new ServerListener(myServer), HelloMessage.class);
         // ...
         
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        ArrayList<HostedConnection> con = new ArrayList<HostedConnection> (myServer.getConnections());
-        if (con.size() != 0){
-            //System.out.println(con.get(0).getAddress());
-        }
+        
     }
 
     @Override

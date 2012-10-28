@@ -79,8 +79,10 @@ public class ClientMain extends SimpleApplication implements ActionListener {
      }
 
     public void onAction(String name, boolean isPressed, float tpf) {
+        // El pulsar la tecla 'M' enviamos un saludo al servidor.
         if(name.equals("Key_M") && !isPressed){
-                Message message = new HelloMessage("Hello World!");
+                int clientID = myClient.getId();
+                Message message = new HelloMessage("Hello, my id is "+ clientID +".");
                 myClient.send(message);
         }
     }
