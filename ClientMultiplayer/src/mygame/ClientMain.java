@@ -22,6 +22,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +37,7 @@ public class ClientMain extends SimpleApplication implements ActionListener {
     
     
     Timer time;
-    int delay = 500; // timer delay in miliseconds
+    int delay = 100; // timer delay in miliseconds
     int count = 1;
     
 
@@ -74,6 +75,15 @@ public class ClientMain extends SimpleApplication implements ActionListener {
             }
         }, 0, delay);  
         
+        
+        // Objeto multi-thread para, por ejemplo, actualizar la posición del
+        // modelo de un player.
+        Callable c = new Callable() {
+
+            public Object call() throws Exception {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
         
         //inputManager.addMapping("Key_M", new KeyTrigger(KeyInput.KEY_M));
         //inputManager.addListener(this, "Key_M");
