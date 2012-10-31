@@ -16,9 +16,12 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.JmeContext;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +32,13 @@ import java.util.logging.Logger;
 public class ClientMain extends SimpleApplication implements ActionListener {
     
     Client myClient = null;
+    boolean send = false;
+    
+    
+    Timer time;
+    int delay = 500; // timer delay in miliseconds
+    int count = 1;
+    
 
     public static void main(String[] args) {
         ClientMain app = new ClientMain();
@@ -53,16 +63,30 @@ public class ClientMain extends SimpleApplication implements ActionListener {
         myClient.addMessageListener(new ClientListener(), HelloMessage.class);
         // ...
         
+        time = new Timer(true);
+        time.schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+                sendBasicMessage(count);
+                count++;
+                System.out.println("Envio mensaje "+count);
+            }
+        }, 0, delay);  
         
-        inputManager.addMapping("Key_M", new KeyTrigger(KeyInput.KEY_M));
-        inputManager.addListener(this, "Key_M");
+        
+        //inputManager.addMapping("Key_M", new KeyTrigger(KeyInput.KEY_M));
+        //inputManager.addListener(this, "Key_M");
         
         
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-        //TODO: add update code
+        if(send){
+            sendBasicMessage(count);
+            count++;
+        }
     }
 
     @Override
@@ -77,13 +101,20 @@ public class ClientMain extends SimpleApplication implements ActionListener {
          myClient.close();
          super.destroy();
      }
+     
 
     public void onAction(String name, boolean isPressed, float tpf) {
         // El pulsar la tecla 'M' enviamos un saludo al servidor.
         if(name.equals("Key_M") && !isPressed){
-                int clientID = myClient.getId();
-                Message message = new HelloMessage("Hello, my id is "+ clientID +".");
-                myClient.send(message);
+                send = !send;
         }
     }
+    
+    
+    public void sendBasicMessage(int id){
+        int clientID = myClient.getId();
+        Message message = new HelloMessage("Hello, ID: "+ clientID +", Msg: "+id);
+        myClient.send(message);
+    }
+    
 }
